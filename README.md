@@ -5,4 +5,4 @@
 In this repo, [congestive collapse](https://en.wikipedia.org/wiki/Network_congestion#Congestive_collapse) is modeled using SST. 
 
 
-This demonstration of deadlock relies only on [SST-Core](https://github.com/sstsimulator/sst-core)
+This demonstration of congestive collapse relies only on [SST-Core](https://github.com/sstsimulator/sst-core)
