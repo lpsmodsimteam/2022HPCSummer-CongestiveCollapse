@@ -9,10 +9,16 @@ enum DeliveryTypes {
 	ACK,
 };
 
+enum StatusTypes {
+	NEW,
+	RESEND,
+};
+
 struct Message {
 	DeliveryTypes type; // Is this being sent or ack'd.
     int id; // which flow it originates from
     int order_in_crate; // which frame in the window
+	StatusTypes status; // is this package new or was it resent.
 };
 
 // Custom event type that handles Message structures.

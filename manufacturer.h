@@ -26,7 +26,7 @@ public:
     )
 
     SST_ELI_DOCUMENT_PARAMS(
-        {"tickFreq", "Descript", "1s"}
+        {"tickFreq", "Descript", "5s"}
     )
 
     SST_ELI_DOCUMENT_PORTS(
@@ -40,7 +40,7 @@ private:
 
     std::string clock;
 
-    void sendCargo(int frame, SST::Cycle_t currentCycle);
+    void sendCargo(int frame, SST::Cycle_t currentCycle, StatusTypes status);
 
     std::unordered_map<int, int> retransmap;
 

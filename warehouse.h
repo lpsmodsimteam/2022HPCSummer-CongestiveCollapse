@@ -16,8 +16,6 @@ public:
 
     void setup();
 
-    int tick_test;
-
     bool tick( SST::Cycle_t currentCycle );
 
     SST_ELI_REGISTER_COMPONENT(
@@ -30,7 +28,7 @@ public:
     )
 
     SST_ELI_DOCUMENT_PARAMS(
-        {"tickFreq", "Descript", "1s"}
+        {"tickFreq", "Descript", "5s"}
     )
 
     SST_ELI_DOCUMENT_PORTS(
@@ -47,7 +45,15 @@ private:
     int process_rate;
     int queue_max_size;
 
+    int latest_package; // keeps track of the highest cargo in order to determine if a package is a duplicate or goodput (change this comment)
+
     std::string clock; // Defining a clock which can be described via unit math as a string.
+
+    float collapse_threshold;
+
+    //warehouse tracks metrics
+    float cargo_processed; // Total throughput.
+    float cargo_good; // "Goodput"
 };
 
 #endif

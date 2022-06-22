@@ -3,7 +3,6 @@
 #include "warehouse.h"
 #include <sst/core/stopAction.h>
 
-
 int tick_test = 0;
 
 warehouse::warehouse( SST::ComponentId_t id, SST::Params& params) : SST::Component(id) {
@@ -13,10 +12,16 @@ warehouse::warehouse( SST::ComponentId_t id, SST::Params& params) : SST::Compone
     primaryComponentDoNotEndSim();
 
     // soon to be Params
-    queue_max_size = 5;
+    queue_max_size = 500;
     num_of_queues = 1;
-    process_rate = 1;
+    process_rate = 5;
     clock = params.find<std::string>("tickFreq", "1s");
+
+    latest_package = 0;
+    cargo_good = 0;
+    cargo_processed = 0;
+
+    collapse_threshold = 0.2;
 
     registerClock(clock, new SST::Clock::Handler<warehouse>(this, &warehouse::tick));
 
@@ -35,11 +40,23 @@ void warehouse::setup() {
 }
 
 bool warehouse::tick( SST::Cycle_t currentCycle) {
+    std::cout << std::endl;
     output.output(CALL_INFO, "Time (In Seconds): %ld----------------------\n", getCurrentSimTime());
-    if (currentCycle == 10) {
+    output.verbose(CALL_INFO, 1, 0, "Total Cargo Processed: %f\n", cargo_processed);
+    output.verbose(CALL_INFO, 1, 0, "Useful Cargo Processed: %f\n", cargo_good);
+    if (cargoQueue.size() == queue_max_size) {
+        output.verbose(CALL_INFO, 1, 0, "Queue is full!\n");
+    }
+    
+    if (cargo_processed != 0 && cargo_good / cargo_processed < collapse_threshold) {
         primaryComponentOKToEndSim();
         return(true);
     }
+
+    //if (currentCycle == 7) {
+    //    primaryComponentOKToEndSim();
+    //    return(true);
+    //}
 
     // Process queue
     if (!cargoQueue.empty()) {
@@ -51,6 +68,14 @@ bool warehouse::tick( SST::Cycle_t currentCycle) {
             struct Message topCargo = cargoQueue.front(); // Grab cargo at front of queue
             topCargo.type = ACK; // Change type to ACK
             output.output(CALL_INFO, "is processing cargo %d\n", topCargo.order_in_crate);
+
+            if (topCargo.status == NEW) {
+               cargo_processed++;
+               cargo_good++; 
+            } else {
+                cargo_processed++;
+            }
+
             commPort->send(new CommunicationEvent(topCargo)); // Send back to manufacturer acknowledging that the message was received.
             cargoQueue.pop(); // Go to next cargo.
         }
@@ -69,6 +94,8 @@ void warehouse::commHandler(SST::Event *ev) {
                 if (queue_max_size > cargoQueue.size()) {
                     output.output(CALL_INFO, "is queueing cargo %d\n", ce->msg.order_in_crate);
                     cargoQueue.push(ce->msg);
+                } else {
+                    output.output(CALL_INFO, "%d has been dropped\n", ce->msg.order_in_crate);
                 }
                 break;
             case ACK: 

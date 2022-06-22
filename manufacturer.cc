@@ -6,10 +6,10 @@ manufacturer::manufacturer( SST::ComponentId_t id, SST::Params& params) : SST::C
     output.init(getName() + "->", 1, 0, SST::Output::STDOUT);
 
     // soon to be params
-    clock = params.find<std::string>("tickFreq", "1s");
-    window_size = 10;
+    clock = params.find<std::string>("tickFreq", "5s");
+    window_size = 100;
     prev_window_size = 0;
-    retransmit_time = 2; // retransmit time (in unit time)
+    retransmit_time = 20; // retransmit time (in unit time)
     waiting = false; // wait for ack before increasing window size and sending more messages.
 
     message_count = 0;
@@ -30,20 +30,31 @@ bool manufacturer::tick( SST::Cycle_t currentCycle ) {
     output.output(CALL_INFO, "Time (In Seconds): %ld-------------------\n", getCurrentSimTime());
 
     // Scan retransmission map for any cargo that needs to be resent.
+    int max_cargo_can_send = window_size - prev_window_size; // Does not allow more than window size # of retransmitted cargo to be sent (change this)
     for (auto it : retransmap) {
         if (currentCycle - it.second >= retransmit_time) {
-            std::cout << it.first << " needs to be retransmitted" << std::endl;
+            output.verbose(CALL_INFO, 1, 0, "Resending Cargo %d\n", it.first);
+            sendCargo(it.first, currentCycle, RESEND); // Retransmit cargo.
+            max_cargo_can_send--;
+        }
+        if (max_cargo_can_send == 0) {
+            break;
         }
     }
-
-    if (!waiting) {
+    // FIX THIS. More messages should not be sent if max_cargo_can_send is zero. Does a check for that below work out?
+    if (!waiting && max_cargo_can_send != 0) {
         for (int i = prev_window_size; i < window_size; i++ ) {
-            sendCargo(i, currentCycle);
+            sendCargo(i, currentCycle, NEW);
+            max_cargo_can_send--;
+            prev_window_size++;
+            if (max_cargo_can_send == 0) {
+                break;
+            }
         }
     }
     // start transmission timers
 
-    prev_window_size = window_size;
+    //prev_window_size = window_size;
     waiting = true;
     return(false);
 }
@@ -58,7 +69,9 @@ void manufacturer::commHandler(SST::Event *ev) {
                 break;
             case ACK: 
                 output.output(CALL_INFO, "Cargo %d has been received\n", ce->msg.order_in_crate);
-                window_size++;
+                if (ce->msg.status == NEW) {
+                    window_size++;
+                }
                 waiting = false;
                 retransmap.erase(ce->msg.order_in_crate); // Remove cargo from retransmission table.
                 break;
@@ -66,9 +79,9 @@ void manufacturer::commHandler(SST::Event *ev) {
     }
 }
 
-void manufacturer::sendCargo(int frame, SST::Cycle_t currentCycle) {
+void manufacturer::sendCargo(int frame, SST::Cycle_t currentCycle, StatusTypes status) {
     DeliveryTypes type = CARGO;
-    struct Message newCargo { type, 0, frame };
+    struct Message newCargo { type, 0, frame, status };
     retransmap[frame] = currentCycle; // Add frame to retransmission table.
     output.output(CALL_INFO, "is sending cargo %d\n", newCargo.order_in_crate);
     commPort->send(new CommunicationEvent(newCargo));
