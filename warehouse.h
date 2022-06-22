@@ -12,10 +12,11 @@ public:
     warehouse( SST::ComponentId_t id, SST::Params& params );
     ~warehouse();
 
-    void setup();
-    void finish();
-
     void commHandler( SST::Event *ev );
+
+    void setup();
+
+    int tick_test;
 
     bool tick( SST::Cycle_t currentCycle );
 
@@ -29,7 +30,7 @@ public:
     )
 
     SST_ELI_DOCUMENT_PARAMS(
-
+        {"tickFreq", "Descript", "1s"}
     )
 
     SST_ELI_DOCUMENT_PORTS(

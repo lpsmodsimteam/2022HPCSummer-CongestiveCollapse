@@ -3,6 +3,7 @@
 
 #include <sst/core/component.h>
 #include <sst/core/link.h>
+#include <unordered_map>  // hashmap
 #include "CommunicationEvent.h"
 
 class manufacturer : public SST::Component {
@@ -10,9 +11,6 @@ class manufacturer : public SST::Component {
 public: 
     manufacturer ( SST::ComponentId_t id, SST::Params& params );
     ~manufacturer();
-
-    void setup();
-    void finish();
 
     bool tick ( SST::Cycle_t currentCycle );
 
@@ -28,7 +26,7 @@ public:
     )
 
     SST_ELI_DOCUMENT_PARAMS(
-
+        {"tickFreq", "Descript", "1s"}
     )
 
     SST_ELI_DOCUMENT_PORTS(
@@ -42,11 +40,16 @@ private:
 
     std::string clock;
 
-    void sendCargo(int frame);
+    void sendCargo(int frame, SST::Cycle_t currentCycle);
 
+    std::unordered_map<int, int> retransmap;
+
+    bool waiting;
     int node_count;
     int retransmit_time;
     int window_size;
+    int prev_window_size;
+    int prev_tick_window;
     int64_t message_count;
 };
 
