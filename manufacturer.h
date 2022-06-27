@@ -18,7 +18,7 @@ public:
 
     SST_ELI_REGISTER_COMPONENT(
         manufacturer,
-        "congestionCollapse",
+        "congestiveCollapse",
         "manufacturer",
         SST_ELI_ELEMENT_VERSION( 1, 0, 0 ),
         "description",
@@ -30,7 +30,7 @@ public:
     )
 
     SST_ELI_DOCUMENT_PORTS(
-        {"commPort", "Port where cargo and acknoledgement messages are transported on", {"CommunicationEvent"}}
+        {"commPort", "Port where cargo and acknowledgement messages are transported on", {"CommunicationEvent"}}
     )
 
 private:

@@ -48,27 +48,29 @@ bool warehouse::tick( SST::Cycle_t currentCycle) {
         output.verbose(CALL_INFO, 1, 0, "Queue is full!\n");
     }
     
+    // Determine if the ratio of useful throughput and all throughput reaches a arbitrary threshold to declare congestive collapse.
     if (cargo_processed != 0 && cargo_good / cargo_processed < collapse_threshold) {
         primaryComponentOKToEndSim();
         return(true);
     }
 
-    //if (currentCycle == 7) {
-    //    primaryComponentOKToEndSim();
+    //if (currentCycle == 9) {
+    //   primaryComponentOKToEndSim();
     //    return(true);
     //}
 
-    // Process queue
+    // Process queue of cargo if its not empty
     if (!cargoQueue.empty()) {
         for (int i = 0; i < process_rate; i++) {
-            // Queue might be come empty during processing, in this case break.
+            // Queue might become empty during processing, in this case break.
             if (cargoQueue.empty()) {
                 break;
             }
             struct Message topCargo = cargoQueue.front(); // Grab cargo at front of queue
             topCargo.type = ACK; // Change type to ACK
-            output.output(CALL_INFO, "is processing cargo %d\n", topCargo.order_in_crate);
+            output.verbose(CALL_INFO, 1, 0, "is processing cargo %d\n", topCargo.order_in_crate);
 
+            // Increment metrics depending on if this cargo is new or is a duplicate.
             if (topCargo.status == NEW) {
                cargo_processed++;
                cargo_good++; 
@@ -80,8 +82,6 @@ bool warehouse::tick( SST::Cycle_t currentCycle) {
             cargoQueue.pop(); // Go to next cargo.
         }
     }
-        // Send acks
-        // Collect data (Eye does it?)
     return(false);
 }
 

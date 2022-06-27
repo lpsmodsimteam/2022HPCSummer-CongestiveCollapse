@@ -20,7 +20,7 @@ public:
 
     SST_ELI_REGISTER_COMPONENT(
         warehouse, // class
-        "congestionCollapse", // element library
+        "congestiveCollapse", // element library
         "warehouse", // component
         SST_ELI_ELEMENT_VERSION( 1, 0, 0 ),
         "description",

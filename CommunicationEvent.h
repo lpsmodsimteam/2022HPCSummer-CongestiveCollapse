@@ -10,8 +10,8 @@ enum DeliveryTypes {
 };
 
 enum StatusTypes {
-	NEW,
 	RESEND,
+	NEW,
 };
 
 struct Message {
@@ -32,6 +32,7 @@ public:
 		ser & msg.id;
 		ser & msg.order_in_crate;
 		ser & msg.type;
+		ser & msg.status;
 	}
 
 	

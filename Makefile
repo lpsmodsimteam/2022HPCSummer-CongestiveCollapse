@@ -16,7 +16,7 @@ OBJ=$(SRC:%.cc=.build/%.o)
 DEP=$(OBJ:%.o=%.d)
 
 # Name of the library we will be working with
-PACKAGE=congestionCollapse
+PACKAGE=congestiveCollapse
 
 # Simply typing "make" calls this by default, so everything gets built and installed
 all: test

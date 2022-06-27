@@ -6,10 +6,10 @@ manufacturer::manufacturer( SST::ComponentId_t id, SST::Params& params) : SST::C
     output.init(getName() + "->", 1, 0, SST::Output::STDOUT);
 
     // soon to be params
-    clock = params.find<std::string>("tickFreq", "5s");
+    clock = params.find<std::string>("tickFreq", "1s");
     window_size = 100;
     prev_window_size = 0;
-    retransmit_time = 20; // retransmit time (in unit time)
+    retransmit_time = 5; // retransmit time (in unit time)
     waiting = false; // wait for ack before increasing window size and sending more messages.
 
     message_count = 0;
@@ -61,11 +61,12 @@ bool manufacturer::tick( SST::Cycle_t currentCycle ) {
 
 void manufacturer::commHandler(SST::Event *ev) {
     CommunicationEvent *ce = dynamic_cast<CommunicationEvent*>(ev);
+    output.output(CALL_INFO, "Time (In Millisecond): %ld----------------------\n", getCurrentSimTimeMilli());
     if (ce != NULL) {
         switch(ce->msg.type) 
         {
             case CARGO:
-                output.fatal(CALL_INFO, -1, "received cargo. Something is broke!");
+                output.fatal(CALL_INFO, -1, "received cargo that was not dropped. This should not happen!");
                 break;
             case ACK: 
                 output.output(CALL_INFO, "Cargo %d has been received\n", ce->msg.order_in_crate);
@@ -81,7 +82,7 @@ void manufacturer::commHandler(SST::Event *ev) {
 
 void manufacturer::sendCargo(int frame, SST::Cycle_t currentCycle, StatusTypes status) {
     DeliveryTypes type = CARGO;
-    struct Message newCargo { type, 0, frame, status };
+    struct Message newCargo = { type, 0, frame, status };
     retransmap[frame] = currentCycle; // Add frame to retransmission table.
     output.output(CALL_INFO, "is sending cargo %d\n", newCargo.order_in_crate);
     commPort->send(new CommunicationEvent(newCargo));
