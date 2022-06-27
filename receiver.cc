@@ -19,8 +19,6 @@ receiver::receiver( SST::ComponentId_t id, SST::Params& params) : SST::Component
     curr_queue_entries_new = 0;
     curr_queue_entries_dup = 0;
 
-
-
     registerAsPrimaryComponent();
     primaryComponentDoNotEndSim();
 
@@ -37,18 +35,18 @@ receiver::~receiver() {
 
 bool receiver::tick( SST::Cycle_t currentCycle ) {
 
-    output.verbose(CALL_INFO, 2, 0, "SimTime (In Seconds): ------------ %ld\n", getCurrentSimTime());
+    output.verbose(CALL_INFO, 1, 0, "SimTime (In Seconds): ------------ %ld\n", getCurrentSimTime());
     output.verbose(CALL_INFO, 2, 0, "Throughput: %f\n", packets_received);
     output.verbose(CALL_INFO, 2, 0, "Goodput: %f\n", packets_new); 
     output.verbose(CALL_INFO, 2, 0, "Queue Size: %ld\n", infQueue.size());
-    
+ 
 
     //std::cout << infQueue.size() << std::endl;
 
     //std::cout << getCurrentSimTime() << std::endl;
-    /**if (packets_new != 0 && packets_received != 0) {
-        std::cout << packets_new / (float) packets_received << std::endl;
-    } */
+    //if (packets_new != 0 && packets_received != 0) {
+    //    std::cout << packets_new / (float) packets_received << std::endl;
+    //}
 
     // End when ratio of goodput to total throughput goes below a threshold.
     /**if (packets_new != 0 && packets_received !=0 && (packets_new / (float) packets_received <= 0.2)) {
@@ -57,10 +55,13 @@ bool receiver::tick( SST::Cycle_t currentCycle ) {
     } */
 
     // End after cycle (For collecting statistics)
-    if (currentCycle == 250) {
+    if (currentCycle == 1000) {
         primaryComponentOKToEndSim();
         return(true);
     }
+
+    // Intermediate fixed size queue on the link for collecting statistics.
+
 
     if (!infQueue.empty()) {
         // Process messages in queue.
@@ -144,12 +145,11 @@ void receiver::commHandler(SST::Event *ev) {
                     primaryComponentOKToEndSim();
                 } */
 
-                if (curr_queue_entries_dup + curr_queue_entries_new == 100) {   
+                if (getCurrentSimTime() % 2 == 0) {   
                     //std::cout << curr_queue_entries_new << std::endl;
                     curr_queue_entries_dup = 0;
                     curr_queue_entries_new = 0;
                 }
-                
                 
 
                 break;

@@ -5,9 +5,9 @@ sender = sst.Component("Sender", "congestiveCollapse.sender")
 sender.addParams(
     {
         "tickFreq": "1s",
-        "timeout": "9",
-        "send_rate": "100",
-        "verbose_level": "2",
+        "timeout": "10",
+        "send_rate": "10",
+        "verbose_level": "5",
     }
 )
 
@@ -16,8 +16,8 @@ receiver.addParams(
     {
         "tickFreq": "1s",
         "process_rate": "10",
-        "verbose_level": "2",
+        "verbose_level": "5",
     }
 )
 
-sst.Link("Link").connect((sender, "commPort", "1ms"), (receiver, "commPort", "1ms"))
+sst.Link("Link").connect((sender, "commPort", "1ps"), (receiver, "commPort", "1ps"))

@@ -4,6 +4,7 @@
 #include <sst/core/component.h>
 #include <sst/core/link.h>
 #include <unordered_map>
+#include <vector>
 #include "packetevent.h"
 
 class sender : public SST::Component {
@@ -43,9 +44,13 @@ private:
     inline void sendPacket(int id, SST::Cycle_t currentCycle, StatusType status);
 
     int packets_sent;   
+    int new_packets_sent;
     int retransmissions_sent;
 
     std::unordered_map<int, int> time_map;
+    std::vector<int> time_vec;
+
+
 
     std::string clock;
     int time_out;

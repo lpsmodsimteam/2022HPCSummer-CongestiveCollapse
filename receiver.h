@@ -52,6 +52,7 @@ private:
     float curr_queue_entries_dup; // retransmissions entering the queue on latest tick.
 
     std::queue<Packet> infQueue;
+    std::queue<Packet> fixedQueue;
 
     int process_rate;
     std::string clock;
