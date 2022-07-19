@@ -40,10 +40,10 @@ sender::~sender() {
 bool sender::tick( SST::Cycle_t currentCycle ) {
     output.verbose(CALL_INFO, 2, 0, "SimTime (In Seconds): ------------ %ld\n", getCurrentSimTime()); 
     
-    send_rate = send_rate + 1;
+    //send_rate = send_rate + 1;
     //std::cout << send_rate << std::endl;
     if (start_cycle <= currentCycle) {
-        send_rate = send_rate + 1;
+        //send_rate = send_rate + 1;
         packets_to_send = send_rate;
     
         // Check Transmission Table First
