@@ -30,24 +30,18 @@ public:
     ~receiver();
  
     /**
-     * @brief 
+     * @brief Contains the receiver's behavior and runs at its clock frequency.
      * 
-     * @param currentCycle 
-     * @return true 
-     * @return false 
+     * @param currentCycle Current cycle of the component.
+     * @return true Component is finished running.
+     * @return false Component is not finished running.
      */
     bool tick ( SST::Cycle_t currentCycle );
 
     /**
-     * @brief 
+     * @brief Handles packet information received from a sender component.
      * 
-     */
-    void finish();
-
-    /**
-     * @brief 
-     * 
-     * @param ev 
+     * @param ev PacketEvent that the component received.
      */
     void commHandler(SST::Event *ev);
 

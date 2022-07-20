@@ -1,3 +1,5 @@
+# Reference: http://sst-simulator.org/SSTPages/SSTUserPythonFileFormat/
+
 import sst  # Use SST library
 
 # Creating a sender component from element congestiveCollapse (congestiveCollapse.sender) named "Sender"

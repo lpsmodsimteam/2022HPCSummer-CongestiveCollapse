@@ -76,9 +76,9 @@ public:
      */
 
 private:
-    SST::Output output; //!< SST Output object for printing to the console.
-    SST::Output csvout; //!< SST Output object for printing to a csv file.
-    SST::Link *commPort; //!< Pointer to component's port.
+    SST::Output output;     //!< SST Output object for printing to the console.
+    SST::Output csvout;     //!< SST Output object for printing to a csv file.
+    SST::Link *commPort;    //!< Pointer to component's port.
 
     /**
      * @brief Sends a packet out the sender component's port.
@@ -89,21 +89,20 @@ private:
      */
     inline void sendPacket(int id, SST::Cycle_t currentCycle, StatusType status);
 
-    int packets_sent;   //!< Number of packets sent over link.
-    int new_packets_sent; //!< Number of new packets sent over link.
-    int retransmissions_sent; //!< Number of duplicate packets sent over link.
-    float packet_ratio; //!< Ratio of new and total packets being sent over.
+    int packets_sent;           //!< Number of packets sent over link.
+    int new_packets_sent;       //!< Number of new packets sent over link.
+    int retransmissions_sent;   //!< Number of duplicate packets sent over link.
+    float packet_ratio;         //!< Ratio of new and total packets being sent over.
 
     std::map<int, int> time_map; //!< Ordered map which keeps track of packets and when they were sent to determine if timeout has occured for them.
-    //std::vector<int> time_vec;
 
-    std::string clock;  //!< Frequency component will tick at. Takes in Unit Algebra string. (i.e. "1ms").
-    int time_out;   //!< Number of cycles before retransmission occurs.
-    int send_rate;  //!< Number of packets that are sent out per tick.
+    std::string clock;      //!< Frequency component will tick at. Takes in Unit Algebra string. (i.e. "1ms").
+    int time_out;           //!< Number of cycles before retransmission occurs.
+    int send_rate;          //!< Number of packets that are sent out per tick.
     int packets_to_send;    //!< Number of packets to send in the current cycle.
-    int node_id;    //!< User defined id for sender component.
-    int start_cycle;    //!< Cycle where the sender component begins sending packets.
-    int verbose_level;  //!< Verbosity level of console output.
+    int node_id;            //!< User defined id for sender component.
+    int start_cycle;        //!< Cycle where the sender component begins sending packets.
+    int verbose_level;      //!< Verbosity level of console output.
 };
 
 #endif

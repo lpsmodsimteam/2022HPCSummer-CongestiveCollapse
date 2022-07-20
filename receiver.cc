@@ -8,18 +8,21 @@ int fixed_queue[queue_input_sample];
 int fixed_queue_count;
 
 receiver::receiver( SST::ComponentId_t id, SST::Params& params) : SST::Component(id) {
-    // Initialize parameters
+
+    // Initialize Parameters
     clock = params.find<std::string>("tickFreq", "1s");
     process_rate = params.find<int64_t>("process_rate", 10);
     verbose_level = params.find<int64_t>("verbose_level", 1);
     num_nodes = params.find<int64_t>("num_nodes", 1);
 
+    // Enabling SST Console Output.
     output.init(getName() + "->", verbose_level, 0, SST::Output::STDOUT);
 
+    // Enabling SST File Output
     csvout.init("CSVOUT", 1, 0, SST::Output::FILE, "receiver_data.csv");
     csvout.output("Time,Queue Size,Useful Work,New/Total Packets Entering Queue\n");
 
-    // Initialize stats
+    // Stats
     packets_received = 0;
     packets_new = 0; 
     curr_queue_entries_new = 0;
@@ -28,12 +31,19 @@ receiver::receiver( SST::ComponentId_t id, SST::Params& params) : SST::Component
     // (?)
     fixed_queue_count = 0;
 
+    // Register the node as a primary component.
+	// Then declare that the simulation cannot end until this
+	// primary component declares primaryComponentOKToEndSim();
     registerAsPrimaryComponent();
     primaryComponentDoNotEndSim();
 
+    // Register Clock
     registerClock(clock, new SST::Clock::Handler<receiver>(this, &receiver::tick));
-
+ 
+    // Pointer to an array of port pointers.
     commPort = new SST::Link*[num_nodes];
+
+    // Configure all ports to a different link
     for (int i = 0; i < num_nodes; ++i) {
         std::string strport = "commPort" + std::to_string(i);
         commPort[i] = configureLink(strport, new SST::Event::Handler<receiver>(this, &receiver::commHandler));
@@ -48,13 +58,7 @@ receiver::~receiver() {
 
 }
 
-void receiver::finish() { 
-    
-    
-}
-
 bool receiver::tick( SST::Cycle_t currentCycle ) {
-
     output.verbose(CALL_INFO, 2, 0, "SimTime (In Seconds): ------------ %ld\n", getCurrentSimTime());
     output.verbose(CALL_INFO, 2, 0, "Throughput: %f\n", packets_received);
     output.verbose(CALL_INFO, 2, 0, "Goodput: %f\n", packets_new); 
@@ -132,15 +136,12 @@ bool receiver::tick( SST::Cycle_t currentCycle ) {
     csvout.output("%ld,%ld,%f\n", getCurrentSimTime(), infQueue.size(), work);
     
     //curr_queue_entries_new = 0;
-    //test = 0;
-
-    return(false);
-
-    // Update statistics
+    
+    return(false); 
 }
 
 void receiver::commHandler(SST::Event *ev) {
-    PacketEvent *pe = dynamic_cast<PacketEvent*>(ev);
+    PacketEvent *pe = dynamic_cast<PacketEvent*>(ev); // Cast the incoming event to a PacketEvent pointer.
     if (pe != NULL) {
         switch (pe->pack.type) {
             case PACKET:
@@ -182,5 +183,5 @@ void receiver::commHandler(SST::Event *ev) {
                 break;
         }
     }
-    delete ev;
+    delete ev; // Delete event to prevent memory leaks.
 }
