@@ -3,9 +3,9 @@
 #include "receiver.h"
 
 // change to param
-const int queue_input_sample = 100;
-int fixed_queue[queue_input_sample];
-int fixed_queue_count;
+//const int queue_input_sample = 100;
+//int fixed_queue[queue_input_sample];
+//int fixed_queue_count;
 
 receiver::receiver( SST::ComponentId_t id, SST::Params& params) : SST::Component(id) {
 
@@ -29,7 +29,7 @@ receiver::receiver( SST::ComponentId_t id, SST::Params& params) : SST::Component
     curr_queue_entries_dup = 0;
 
     // (?)
-    fixed_queue_count = 0;
+    //fixed_queue_count = 0;
 
     // Register the node as a primary component.
 	// Then declare that the simulation cannot end until this
