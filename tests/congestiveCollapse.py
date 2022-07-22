@@ -8,22 +8,22 @@ sender = sst.Component("Sender", "congestiveCollapse.sender")
 # Adding parameters to sender.
 sender.addParams(
     {
-        "tickFreq": "1s", # frequency component updates at.
-        "timeout": "10", # timeout length of packets
-        "send_rate": "10", # number of packets sent per tick.
-        "verbose_level": "2", # level of console verbosity.
-        "node_id": "0", # id of node.
-        "start_cycle": "1", # cycle in which component begins to send packets.
+        "tickFreq": "1s",  # frequency component updates at.
+        "timeout": "10",  # timeout length of packets
+        "send_rate": "50",  # number of packets sent per tick.
+        "verbose_level": "2",  # level of console verbosity.
+        "node_id": "0",  # id of node.
+        "start_cycle": "1",  # cycle in which component begins to send packets.
     }
 )
 
 receiver = sst.Component("Receiver", "congestiveCollapse.receiver")
 receiver.addParams(
     {
-        "tickFreq": "1s", # frequency component updates at.
-        "process_rate": "10", # number of packets consumed per tick.
-        "verbose_level": "2", # level of console verbosity.
-        "num_ports": "1", # number of ports on the receiver.
+        "tickFreq": "1s",  # frequency component updates at.
+        "process_rate": "10",  # number of packets consumed per tick.
+        "verbose_level": "2",  # level of console verbosity.
+        "num_ports": "1",  # number of ports on the receiver.
     }
 )
 

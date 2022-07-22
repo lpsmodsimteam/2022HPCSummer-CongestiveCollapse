@@ -81,10 +81,11 @@ private:
 
     float packets_received; //!< Total packets in queue.
     float packets_new; //!< New packets in queue.
-    float work; //!< Ratio of new packets and total packets in queue.
+    float packet_ratio; //!< Ratio of new packets and total packets in queue.
 
-    float new_processed;
-    float dup_processed;
+    float new_processed; // goodput
+    float total_processed; // throughput
+    float work; // ratio of goodput to throughput
     
     float curr_queue_entries_new; //!< New packets entering the queue on latest tick.
     float curr_queue_entries_dup; //!< Retransmissions entering the queue on latest tick.

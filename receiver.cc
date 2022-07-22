@@ -101,14 +101,12 @@ bool receiver::tick( SST::Cycle_t currentCycle ) {
                 packets_received--;
             }
 
-            /**if (packet.status == NEW) {
-                new_processed++;
-                std::cout << "New processed" << std::endl;
+            if (packet.status == NEW) {
+                new_processed++; 
+                total_processed++;
             } else {
-                dup_processed++;
-                std::cout << "Dup Processed" << std::endl;
-            } */
-
+                total_processed++;   
+            }
 
             // Send an ack.
             packet.type = ACK;
@@ -128,12 +126,21 @@ bool receiver::tick( SST::Cycle_t currentCycle ) {
     //std::cout << infQueue.size() << std::endl;
 
     if (packets_received != 0) {
-        work = packets_new / packets_received; 
+        packet_ratio = packets_new / packets_received; 
+    } else {
+        packet_ratio = 0;
+    }
+
+    if (total_processed != 0) {
+        work = new_processed / total_processed;
     } else {
         work = 0;
     }
 
-    csvout.output("%ld,%ld,%f\n", getCurrentSimTime(), infQueue.size(), work);
+    new_processed = 0;
+    total_processed = 0;
+
+    csvout.output("%ld,%ld,%f,%f\n", getCurrentSimTime(), infQueue.size(), packet_ratio, work);
     
     //curr_queue_entries_new = 0;
     

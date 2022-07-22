@@ -16,13 +16,16 @@ set terminal png size 1920,1080
 set output "plot.png"
 set grid
 set offset graph 0,0.1,0.1,0
-set multiplot layout 2,2 title "Congestive Collapse"
+set multiplot layout 3,2 title "Congestive Collapse"
 
     set title "Queue Size"
     plot "receiver_data.csv" using 1:2 title "Queue Size" with lines 
 
-    set title "Useful Work"
-    plot "receiver_data.csv" using 1:3 title "Useful Work" with lines
+    set title "Packet Ratio"
+    plot "receiver_data.csv" using 1:3 title "Ratio of new and retransmitted" with lines
+
+    set title "Throughput"
+    plot "receiver_data.csv" using 1:4 title "Work" with lines
 
     set title "Send Rates"
     plot for [i=0:(ARG1-1)] "sender_data".i.".csv" using 1:2 title "Node".i with lines
