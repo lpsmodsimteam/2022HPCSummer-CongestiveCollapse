@@ -2,7 +2,6 @@
 #include <sst/core/simulation.h>
 #include "sender.h"
 
-
 sender::sender( SST::ComponentId_t id, SST::Params& params) : SST::Component(id) {
     
     // Initialize Parameters
@@ -43,37 +42,19 @@ sender::~sender() {
 bool sender::tick( SST::Cycle_t currentCycle ) {
     output.verbose(CALL_INFO, 2, 0, "SimTime (In Seconds): ------------ %ld\n", getCurrentSimTime()); 
     
-    //send_rate = send_rate + 1;
-    //std::cout << send_rate << std::endl;
+    //send_rate = send_rate + 1; 
     if (start_cycle <= currentCycle) {
         //send_rate = send_rate + 1;
         packets_to_send = send_rate;
     
         // Check Transmission Table First
         // Send any packets that need to be retransmitted.
-        /*
         for (auto it : time_map) {
             if (currentCycle - it.second >= time_out && it.second != 0) {
                 output.verbose(CALL_INFO, 3, 0, "Sending duplicate Packet %d\n", it.first);
                 output.verbose(CALL_INFO, 4, 0, "Duplicate Packet %d: | Current Cycle: %ld | Sent Cycle: %d\n", it.first, currentCycle, it.second);
                 // Changed from packets_sent to it.first
-                sendPacket(it.first, currentCycle, DUP);
-                retransmissions_sent++;
-                packets_sent++;
-                packets_to_send--;
-            }
-            if (packets_to_send == 0) {
-                break;
-            }
-        } */
-
-        for (std::map<int, int>::iterator iter = time_map.begin(); iter != time_map.end(); ++iter)
-        {
-            if (currentCycle - iter->second >= time_out && iter->second != 0) {
-                output.verbose(CALL_INFO, 3, 0, "Sending duplicate Packet %d\n", iter->first);
-                output.verbose(CALL_INFO, 4, 0, "Duplicate Packet %d: | Current Cycle: %ld | Sent Cycle: %d\n", iter->first, currentCycle, iter->second);
-                // Changed from packets_sent to it.first
-                sendPacket(iter->first + packets_sent, currentCycle, DUP);
+                sendPacket(it.first + packets_sent, currentCycle, DUP);
                 retransmissions_sent++;
                 packets_sent++;
                 packets_to_send--;
@@ -110,9 +91,10 @@ void sender::commHandler(SST::Event *ev) {
                 break;
             case ACK:
                 output.verbose(CALL_INFO, 5, 0, "Received ACK for Packet %d\n", pe->pack.id); 
+
                 // Received ACK, delete ID from transmission table.
-                //time_map.erase(pe->pack.id);
-                time_map[pe->pack.id] = 0; 
+                time_map.erase(pe->pack.id);
+                //time_map[pe->pack.id] = 0; 
         }
     }
     delete ev;
