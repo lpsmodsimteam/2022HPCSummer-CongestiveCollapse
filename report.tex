@@ -6,6 +6,15 @@
 
 \usepackage{float}
 
+\usepackage{listings}
+\lstset{
+	basicstyle=\ttfamily,
+	columns=fullflexible,
+	frame=single,
+	breaklines=true,
+	postbreak=\mbox{\textcolor{black}{$\hookrightarrow$}\space},
+}
+
 % margins of 1 inch:
 \setlength{\topmargin}{-.5in}
 \setlength{\textheight}{9.5in}
@@ -62,8 +71,9 @@ Identifying the metrics for detecting congestive collapse will be vital for deve
 A second outcome of this work is to develop examples and documentation of SST simulations that new users can utilize. Currently, SST is primarily used for \href{https://en.wikipedia.org/wiki/High-performance_computing}{High-Performance Computing} (HPC) simulations and the majority of SST examples revolve around modeling HPC systems. However, the SST framework utilizes a powerful discrete-event simulator that can model more than just HPC systems. The models and documentation created for this project show off the discrete-event simulator for simulations not relating to HPC systems.
 
 \section{Prior work} % what does this build on?
-TODO
+Multiple research papers exist describing the problem of congestive collapse and how it was solved. One of the earliest reports by Van Jacobson\cite{vanjacob} described the algorithms put into place after congestive collapse occurred two years prior at the University of California, Berkeley. The work does not go into detail regarding detecting congestive collapse. However, the information on what the new algorithms corrected in reliable networking is useful for figuring out if a network is prone for congestive collapse. The paper also explains how senders without congestion avoidance can increase congestion in the network by sending data above the wires bandwidth, which was useful information to determine that increased packet queuing can lead to packets being retransmitted which can spiral into congestive collapse (See \cite[p.325]{vanjacob}).
 
+Similarly, in the tech report by J. Nagle\cite{RFC0896}, he reports that a primary cause for congestive collapse is due to spurious retransmissions in the network due to inefficient timeout delay algorithms. This information was used for the congestive collapse SST model to simulate congestive collapse occurring on a simplified reliable network.
 \section{Running the Model}
 
 The software developed for this challenge was run on one laptop running an Ubuntu-Based Linux operating system.
@@ -75,7 +85,7 @@ The software developed for this challenge was run on one laptop running an Ubunt
 \noindent Prerequisites: 
 
 \begin{verbatim}
-	sudo apt install singularity
+	sudo apt install singularity black mypi
 	git clone https://github.com/tactcomplabs/sst-containers.git
 	cp sst-containers/singularity/sstpackage-11.1.0-ubuntu-20.04.sif /usr/local/bin/
 	git clone https://github.com/lpsmodsim/2022HPCSummer-SST.git
@@ -95,13 +105,27 @@ The software developed for this challenge was run on one laptop running an Ubunt
 	make
 \end{verbatim}
 
+\noindent Expected Output:
+
+\begin{lstlisting}[language=bash, frame=none]
+mkdir -p .build
+singularity exec /usr/local/bin/additions.sif g++ -std=c++1y -D__STDC_FORMAT_MACROS -fPIC -DHAVE_CONFIG_H -I/opt/SST/11.1.0/include -MMD -c receiver.cc -o .build/receiver.o
+mkdir -p .build
+singularity exec /usr/local/bin/additions.sif g++ -std=c++1y -D__STDC_FORMAT_MACROS -fPIC -DHAVE_CONFIG_H -I/opt/SST/11.1.0/include -MMD -c sender.cc -o .build/sender.o
+singularity exec /usr/local/bin/additions.sif g++ -std=c++1y -D__STDC_FORMAT_MACROS -fPIC -DHAVE_CONFIG_H -I/opt/SST/11.1.0/include -shared -fno-common -Wl,-undefined -Wl,dynamic_lookup -o libcongestiveCollapse.so .build/receiver.o .build/sender.o
+singularity exec /usr/local/bin/additions.sif sst-register congestiveCollapse congestiveCollapse_LIBDIR=/home/{USER}/sst-work/2022HPCSummer-CongestiveCollapse
+singularity exec /usr/local/bin/additions.sif black tests/*.py
+singularity exec /usr/local/bin/additions.sif mypy tests/*.py
+Success: no issues found in 2 source files
+singularity exec /usr/local/bin/additions.sif sst tests/congestiveCollapse.py
+(Simulation console output)
+\end{lstlisting}
+
 \noindent The simulation can be modified by editing the \href{http://sst-simulator.org/SSTPages/SSTUserPythonFileFormat/}{python driver file}, it is located at:
 
 \begin{verbatim}
 2022HPCSummer-CongestiveCollapse/tests/congestionCollapse.py
 \end{verbatim}
-
-\noindent TODO: Include example output\newline
 
 \section{The Model}
 
@@ -163,4 +187,8 @@ As the queue grows, starting at around 15 seconds, the ratio of new and retransm
 \section{Future Work}
 Currently, the user must define some threshold to declare that the simulation has encountered congestive collapse. It might be better if the metric measures the trend of data during simulation. For instance, the ratio of new packets to retransmitted packets in the receiver's queue can be analyzed during runtime, and if the change in data appears to be following an exponential decay fit, then the probability that congestive collapse exist increases. Similarly, if the queue size is increasing over time, then this adds to the probability that congestive collapse exists.
 
+\bibliographystyle{plain}
+\bibliography{biblio}
+
 \end{document}
+

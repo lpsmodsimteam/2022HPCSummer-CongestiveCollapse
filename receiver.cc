@@ -19,7 +19,7 @@ receiver::receiver( SST::ComponentId_t id, SST::Params& params) : SST::Component
     output.init(getName() + "->", verbose_level, 0, SST::Output::STDOUT);
 
     // Enabling SST File Output
-    csvout.init("CSVOUT", 1, 0, SST::Output::FILE, "receiver_data.csv");
+    csvout.init("CSVOUT", 1, 0, SST::Output::FILE, "output/receiver_data.csv");
     csvout.output("Time,Queue Size,Useful Work,New/Total Packets Entering Queue\n");
 
     // Stats
@@ -65,7 +65,7 @@ bool receiver::tick( SST::Cycle_t currentCycle ) {
     output.verbose(CALL_INFO, 2, 0, "Queue Size: %ld\n", infQueue.size()); 
 
     // End after cycle (For collecting statistics)
-    if (currentCycle == 100) {
+    if (currentCycle == 300) {
         primaryComponentOKToEndSim();
         return(true);
     }

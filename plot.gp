@@ -22,22 +22,22 @@ set multiplot layout 3,2 title "Congestive Collapse"
     set title "Queue Size"
     set key at graph 1, 0.8
     set ylabel "Packets in Queue"
-    plot "receiver_data.csv" using 1:2 title "Queue Size" with lines lw 3
+    plot "output/receiver_data.csv" using 1:2 title "Queue Size" with lines lw 3
     
     set key at graph 1, 0.9
     set title "Ratio of New and Retransmitted Packets in Queue"
     set ylabel "Packet Ratio"
-    plot "receiver_data.csv" using 1:3 title "Packet Ratio" with lines lw 3
+    plot "output/receiver_data.csv" using 1:3 title "Packet Ratio" with lines lw 3
 
     set title "Useful Throughput of Receiver"
     set ylabel "Goodput (%)"
-    plot "receiver_data.csv" using 1:4 title "Goodput" with lines lw 3
+    plot "output/receiver_data.csv" using 1:4 title "Goodput" with lines lw 3
 
     set title "Send Rates"
     unset ylabel
-    plot for [i=0:(ARG1-1)] "sender_data".i.".csv" using 1:2 title "Sender-".i with lines lw 3
+    plot for [i=0:(ARG1-1)] "output/sender_data".i.".csv" using 1:2 title "Sender-".i with lines lw 3
 
     set title "New / Total Packets Sent Out"
-    plot for [i=0:(ARG1-1)] "sender_data".i.".csv" using 1:3 title "Sender-".i with lines lw 3
+    plot for [i=0:(ARG1-1)] "output/sender_data".i.".csv" using 1:3 title "Sender-".i with lines lw 3
 
 unset multiplot
