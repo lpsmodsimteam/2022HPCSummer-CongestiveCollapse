@@ -5,7 +5,7 @@ import sst  # Use SST library
 # REQUIREMENTS:
 # If n Sender components are created, the field 'node_id' should be equal to some number 0 to n-1 and should be different for each component.
 # Receiver component's field 'num_ports' must be equal to the number of Sender components created.
-
+# i.e. if I create two sender components, one must have node_id '0' and the other node_id '1'. The receiving component will have num_ports '2'.
 
 # Creating a sender component from element congestiveCollapse (congestiveCollapse.sender) named "Sender"
 sender = sst.Component("Sender", "congestiveCollapse.sender")
@@ -36,7 +36,7 @@ sender_two.addParams(
     }
 )
 
-# Adding parameters to receiver.
+# Create a receiver and add parameters to it.
 receiver = sst.Component("Receiver", "congestiveCollapse.receiver")
 receiver.addParams(
     {
@@ -48,9 +48,9 @@ receiver.addParams(
 )
 
 # Connect the sender to one of the receiver's ports.
-sst.Link("Link").connect((sender, "commPort", "1ms"), (receiver, "commPort0", "1ms"))
+sst.Link("Link_One").connect((sender, "commPort", "1ms"), (receiver, "commPort0", "1ms"))
 
 
-sst.Link("Linktwo").connect(
+sst.Link("Link_Two").connect(
     (sender_two, "commPort", "1ms"), (receiver, "commPort1", "1ms")
 )

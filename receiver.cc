@@ -65,7 +65,7 @@ bool receiver::tick( SST::Cycle_t currentCycle ) {
     output.verbose(CALL_INFO, 2, 0, "Queue Size: %ld\n", infQueue.size()); 
 
     // End after cycle (For collecting statistics)
-    if (currentCycle == 300) {
+    if (currentCycle == 100) {
         primaryComponentOKToEndSim();
         return(true);
     }
