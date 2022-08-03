@@ -96,6 +96,7 @@ private:
     int process_rate; //!< Number of packets that are processed per tick.
     std::string clock; //!< Frequency component will tick at. Takes in Unit Algebra string (i.e. "1ms").
     int verbose_level; //!< Verbosity level of console output.
+    int64_t run_time; //!< Number of cycles the simulation runs.
 };
 
 #endif

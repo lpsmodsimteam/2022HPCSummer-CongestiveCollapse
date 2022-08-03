@@ -2,11 +2,6 @@
 #include <sst/core/simulation.h>
 #include "receiver.h"
 
-// change to param
-//const int queue_input_sample = 100;
-//int fixed_queue[queue_input_sample];
-//int fixed_queue_count;
-
 receiver::receiver( SST::ComponentId_t id, SST::Params& params) : SST::Component(id) {
 
     // Initialize Parameters
@@ -14,6 +9,7 @@ receiver::receiver( SST::ComponentId_t id, SST::Params& params) : SST::Component
     process_rate = params.find<int64_t>("process_rate", 10);
     verbose_level = params.find<int64_t>("verbose_level", 1);
     num_nodes = params.find<int64_t>("num_nodes", 1);
+    run_time = params.find<int64_t>("run_time", 100);
 
     // Enabling SST Console Output.
     output.init(getName() + "->", verbose_level, 0, SST::Output::STDOUT);
@@ -27,9 +23,6 @@ receiver::receiver( SST::ComponentId_t id, SST::Params& params) : SST::Component
     packets_new = 0; 
     curr_queue_entries_new = 0;
     curr_queue_entries_dup = 0;
-
-    // (?)
-    //fixed_queue_count = 0;
 
     // Register the node as a primary component.
 	// Then declare that the simulation cannot end until this
@@ -59,13 +52,8 @@ receiver::~receiver() {
 }
 
 bool receiver::tick( SST::Cycle_t currentCycle ) {
-    output.verbose(CALL_INFO, 2, 0, "SimTime (In Seconds): ------------ %ld\n", getCurrentSimTime());
-    output.verbose(CALL_INFO, 2, 0, "Throughput: %f\n", packets_received);
-    output.verbose(CALL_INFO, 2, 0, "Goodput: %f\n", packets_new); 
-    output.verbose(CALL_INFO, 2, 0, "Queue Size: %ld\n", infQueue.size()); 
-
     // End after cycle (For collecting statistics)
-    if (currentCycle == 100) {
+    if (currentCycle == run_time) {
         primaryComponentOKToEndSim();
         return(true);
     }
@@ -84,21 +72,12 @@ bool receiver::tick( SST::Cycle_t currentCycle ) {
             if (packet.status == NEW) {
                 packets_new--;
                 packets_received--;
-
                 new_processed++;
                 total_processed++;    
             } else {
                 total_processed++;
                 packets_received--;
             }
-
-            /**
-            if (packet.status == NEW) {
-                new_processed++; 
-                total_processed++;
-            } else {
-                total_processed++;   
-            }*/
 
             // Send an ack.
             packet.type = ACK;
@@ -108,6 +87,7 @@ bool receiver::tick( SST::Cycle_t currentCycle ) {
         }
     }
  
+    // Calculate ratios.
     if (packets_received != 0) {
         packet_ratio = packets_new / packets_received; 
     } else {
@@ -120,10 +100,13 @@ bool receiver::tick( SST::Cycle_t currentCycle ) {
         work = 0;
     }
 
+    // Throughput calculated in a window of one tick so these values are reset.
     new_processed = 0;
     total_processed = 0;
 
     csvout.output("%ld,%ld,%f,%f\n", getCurrentSimTime(), infQueue.size(), packet_ratio, work);
+
+    output.verbose(CALL_INFO, 1, 0, "Current SimTime: %ld\nQueue Size: %ld\nRatio of new and total packets in queue: %f\nRatio of useful throughput and total throughput: %f\n\n", getCurrentSimTime(), infQueue.size(), packet_ratio, work);
      
     return(false); 
 }

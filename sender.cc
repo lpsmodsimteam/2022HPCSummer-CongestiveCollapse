@@ -42,9 +42,8 @@ sender::~sender() {
 bool sender::tick( SST::Cycle_t currentCycle ) {
     output.verbose(CALL_INFO, 2, 0, "SimTime (In Seconds): ------------ %ld\n", getCurrentSimTime()); 
     
-    //send_rate = send_rate + 1; 
     if (start_cycle <= currentCycle) {
-        //send_rate = send_rate + 1;
+        //send_rate = send_rate + 1; Uncomment if you want linearly increasing rates.
         packets_to_send = send_rate;
     
         // Check Transmission Table First
@@ -53,7 +52,6 @@ bool sender::tick( SST::Cycle_t currentCycle ) {
             if (currentCycle - it.second >= time_out && it.second != 0) {
                 output.verbose(CALL_INFO, 3, 0, "Sending duplicate Packet %d\n", it.first);
                 output.verbose(CALL_INFO, 4, 0, "Duplicate Packet %d: | Current Cycle: %ld | Sent Cycle: %d\n", it.first, currentCycle, it.second);
-                // Changed from packets_sent to it.first
                 sendPacket(it.first + packets_sent, currentCycle, DUP);
                 retransmissions_sent++;
                 packets_sent++;
@@ -92,9 +90,8 @@ void sender::commHandler(SST::Event *ev) {
             case ACK:
                 output.verbose(CALL_INFO, 5, 0, "Received ACK for Packet %d\n", pe->pack.id); 
 
-                // Received ACK, delete ID from transmission table.
+                // Received ACK, delete ID from retransmission table.
                 time_map.erase(pe->pack.id);
-                //time_map[pe->pack.id] = 0; 
         }
     }
     delete ev;
@@ -105,7 +102,7 @@ void sender::sendPacket(int id, SST::Cycle_t currentCycle, StatusType status) {
     PacketType type = PACKET;
     Packet packet = { type, status, id, currentCycle, node_id };
 
-    time_map[id] = currentCycle + 1;
+    time_map[id] = currentCycle + 1; // Add time packet was sent and its ID to keep track of when it needs to be retransmitted.
 
     commPort->send(new PacketEvent(packet));
 }
