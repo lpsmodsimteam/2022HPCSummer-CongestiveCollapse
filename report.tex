@@ -46,12 +46,12 @@
 
     % https://stackoverflow.com/a/3408428/1164295
     \begin{minipage}[h]{\textwidth}
-        \title{2022 Future Computing Summer Internship Project:\\Modeling Congestive Collapse in a Discrete-Event Simulator to Measure its Existence in a Simulation.}
+        \title{2022 Future Computing Summer Internship Project:\\Modeling Congestive Collapse in a Discrete-Event Simulator to Find Metrics to Measure its Existence in a Simulation}
         \author{Nicholas Schantz}
         \date{\today}
             \maketitle
         \begin{abstract}
-            \href{https://en.wikipedia.org/wiki/Network_congestion#Congestive_collapse}{Congestive collapse} is an issue involving \href{https://en.wikipedia.org/wiki/Reliability_(computer_networking}{reliable network protocols} where a large amount of \href{https://www.javatpoint.com/tcp-retransmission}{retransmitted data} clogs a network. This causes the network's useful throughput to decline. This research addresses the question as to whether metrics exist to determine if this problem has occurred in a simulated network. These metrics are useful for network architects who are unaware of this problem, because they can better understand how to avoid causing this problem in network simulations. The \href{https://en.wikipedia.org/wiki/Discrete-event_simulation}{discrete-event simulator} (DES) framework called \href{http://sst-simulator.org/}{Structural Simulation Toolkit} (SST) is used to simulate this activity and find metrics to determine if it exist in a simulation. An SST model of a simple reliable network in which multiple nodes send packets to one receiving node. The receiving node is flooded with retransmitted data over time to create congestive collapse in the network. Data from the receiving node is analyzed and results reveal that a receiver's queue depth and ratio of first packets to duplicate packets directly measure the existence of congestive collapse. The ratio of \href{https://en.wikipedia.org/wiki/Goodput}{goodput} to total \href{https://en.wikipedia.org/wiki/Network_throughput}{throughput} can also measure congestive collapse.
+            \href{https://en.wikipedia.org/wiki/Network_congestion#Congestive_collapse}{Congestive collapse} is an issue involving \href{https://en.wikipedia.org/wiki/Reliability_(computer_networking}{reliable network protocols} where a large amount of \href{https://www.javatpoint.com/tcp-retransmission}{retransmitted data} clogs a network. This causes the network's useful throughput to decline. This research addresses the question as to whether metrics exist to determine if this problem has occurred in a simulated network. These metrics are useful for network architects who are unaware of this problem, because they can better understand how to avoid causing this problem in network simulations. The \href{https://en.wikipedia.org/wiki/Discrete-event_simulation}{discrete-event simulator} (DES) framework named \href{http://sst-simulator.org/}{Structural Simulation Toolkit} (SST) is used to simulate this activity and find metrics to determine if congestive collapse exists in a simulation. An SST model is created of a simple reliable network in which multiple nodes send packets to one receiving node. The receiving node is flooded with retransmitted data over time to create congestive collapse in the network. Data from the receiving node is analyzed and results reveal that a receiver's queue depth and ratio of first packets to duplicate packets  measures the existence of congestive collapse. The ratio of \href{https://en.wikipedia.org/wiki/Goodput}{goodput} to total \href{https://en.wikipedia.org/wiki/Network_throughput}{throughput} can also measure congestive collapse.
         \end{abstract}
     \end{minipage}
 
@@ -66,19 +66,18 @@ The challenge addressed by this work is to map the networking problem congestive
 
 \section{Motivation} % Why does this work matter? Who cares? If you're successful, what difference does it make?
 
-Identifying the metrics for detecting congestive collapse will be vital for developing distributed systems that can avoid congestive collapse from occurring during communication. Network architects may be unaware of this problem when they begin to model and simulate a network. The metrics found in this research can help them catch this problem when it occurs during the simulation's development. The SST models created will demonstrate how the problem can occur in a simulation. These results allow for the problem to be avoided during simulation so it does not occur when the system is put into production.
+Identifying the metrics for detecting congestive collapse will be vital for developing distributed systems that can avoid congestive collapse from occurring during communication. Network architects may be unaware of this problem when they begin to model and simulate a network. The metrics found in this research can help the network architects catch this problem when it occurs during the simulation's development. The SST models created will demonstrate how the problem can occur in a simulation. These results allow for the problem to be prevented during simulation so it does not occur when the system is put into production.
 
-A second outcome of this work is to develop examples and documentation of SST simulations that new users can utilize. Currently, SST is primarily used for \href{https://en.wikipedia.org/wiki/High-performance_computing}{High-Performance Computing} (HPC) simulations and the majority of SST examples revolve around modeling HPC systems. However, the SST framework utilizes a powerful discrete-event simulator that can model more than just HPC systems. The models and documentation created for this project show off the discrete-event simulator for simulations not relating to HPC systems.
+A second goal of this work is to develop examples and documentation of SST simulations that new users can utilize. Currently, SST is primarily used for \href{https://en.wikipedia.org/wiki/High-performance_computing}{High-Performance Computing} (HPC) simulations and the majority of SST examples revolve around modeling HPC systems. However, the SST framework utilizes a powerful discrete-event simulator that can model more than just HPC systems. The models and documentation created for this project show off the discrete-event simulator for simulations not relating to HPC systems.
 
 \section{Prior work} % what does this build on?
-Multiple research papers exist describing the problem of congestive collapse and how it was solved. One of the earlier reports by Van Jacobson\cite{vanjacob} described the algorithms put into place after congestive collapse occurred two years prior at the University of California, Berkeley. The information on what the new algorithms corrected in reliable networking is useful for figuring out if a network is prone for congestive collapse. The paper also explains how senders without congestion avoidance can increase congestion in the network by sending data above the wires bandwidth, which was useful information to determine that increased packet queuing can lead to packets being retransmitted which can spiral into congestive collapse (See \cite[p.325]{vanjacob}).
+In a report by Van Jacobson\cite{vanjacob}, Jacobson explains the algorithms put into place after congestive collapse occurred two years prior at the University of California, Berkeley. The information on what the new algorithms corrected in reliable networking is useful for figuring out if a network is prone for congestive collapse. Jacobson also explains how senders without congestion avoidance can increase congestion in the network by sending data above the wire's bandwidth, which is useful information to determine that increased packet queuing can lead to packets being retransmitted which can spiral into congestive collapse (See \cite[p.325]{vanjacob}).
 
-Similarly, in the tech report by J. Nagle\cite{RFC0896}, he reports that a primary cause for congestive collapse is due to spurious retransmissions in the network due to inefficient timeout delay algorithms. This information was used for the congestive collapse SST model to simulate congestive collapse occurring on a simplified reliable network.
+Similarly, in the tech report by J. Nagle\cite{RFC0896}, Nagle reports that a primary cause for congestive collapse is due to spurious retransmissions in the network due to inefficient timeout delay algorithms. This information was used for the congestive collapse SST model to simulate congestive collapse occurring on a simplified reliable network.
 \section{Running the Model}
 
 The software developed for this challenge was run on one laptop running an Ubuntu-Based Linux operating system.
-
-\noindent The software is available on \href{https://github.com/lpsmodsim/2022HPCSummer-CongestiveCollapse}{https://github.com/lpsmodsim/2022HPCSummer-CongestiveCollapse}.\newline
+The software is available at \href{https://github.com/lpsmodsim/2022HPCSummer-CongestiveCollapse}{https://github.com/lpsmodsim/2022HPCSummer-CongestiveCollapse}.\newline
 
 \noindent Assuming the user is on a system running a Ubuntu-Based Linux Distro. To run the software:\newline
 
@@ -87,10 +86,17 @@ The software developed for this challenge was run on one laptop running an Ubunt
 \begin{verbatim}
 	sudo apt install singularity black mypi
 	git clone https://github.com/tactcomplabs/sst-containers.git
+\end{verbatim}
+
+\noindent Follow the instructions in the git repo to build the container "sstpackage-11.1.0-ubuntu-20.04.sif".
+
+\begin{verbatim}
 	cp sst-containers/singularity/sstpackage-11.1.0-ubuntu-20.04.sif /usr/local/bin/
 	git clone https://github.com/lpsmodsim/2022HPCSummer-SST.git
 	sudo . /2022HPCSummer-SST/additions.def.sh
 \end{verbatim}
+
+\noindent Obtaining and running the model:
 
 \begin{verbatim}
 	git clone https://github.com/lpsmodsim/2022HPCSummer-CongestiveCollapse
@@ -105,7 +111,7 @@ The software developed for this challenge was run on one laptop running an Ubunt
 	make
 \end{verbatim}
 
-\noindent Expected Output:
+\noindent Expected output:
 
 \begin{lstlisting}[language=bash, frame=none]
 mkdir -p .build
@@ -121,7 +127,7 @@ singularity exec /usr/local/bin/additions.sif sst tests/congestiveCollapse.py
 (Simulation console output)
 \end{lstlisting}
 
-\noindent The simulation can be modified by editing the \href{http://sst-simulator.org/SSTPages/SSTUserPythonFileFormat/}{python driver file}, it is located at:
+\noindent The simulation can be modified by editing the \href{http://sst-simulator.org/SSTPages/SSTUserPythonFileFormat/}{python driver file}, which is located at:
 
 \begin{verbatim}
 2022HPCSummer-CongestiveCollapse/tests/congestionCollapse.py
@@ -129,7 +135,7 @@ singularity exec /usr/local/bin/additions.sif sst tests/congestiveCollapse.py
 
 \section{The Model}
 
-The model is made up of sender components and receiver components who send and receive packets respectively. There is \textit{n} senders connected to one receiver. The senders will send a set number of packets to the receiver and the receiver will enqueue the packets to an infinite queue. The receiver will process a set number of packets and respond to the senders with acknowledgments for the packets it has processed. The sender keeps track of every packet sent and if it does not receive an acknowledgment for that packet in a set time, it will retransmit the packet.
+The model is made up of sender components and receiver components who send and receive packets respectively. There is \textit{n} senders connected to one receiver. The senders will send a set number of packets to the receiver and the receiver will enqueue the packets to an infinite queue. The receiver will process a set number of packets and respond to the senders with acknowledgments for the packets it has processed. A sender keeps track of every packet sent and if it does not receive an acknowledgment for that packet in a set time, it will retransmit the packet.
 
 \begin{figure}[H]
 	\includegraphics[scale=0.5]{model-multi}
@@ -140,16 +146,16 @@ The model is made up of sender components and receiver components who send and r
 Key components that are logged by the receiver component are as follows:
 
 \begin{itemize}
-	\item Throughput - the number of new and retransmitted packets that are processed by the receiver per second.
-	\item Goodput - the number of new packets that are processed by the receiver per second.
+	\item Throughput - the number of new and retransmitted packets that are processed by the receiver per component tick.
+	\item Goodput - the number of new packets that are processed by the receiver per component tick.
 	\item Queue Depth - The number of packets in the queue.
-	\item Queue Entries - Number of new and retransmitted packets entering the queue per second.
+	\item Queue Entries - Number of new and retransmitted packets entering the queue per component tick.
 \end{itemize}
 
 
 \section{Result} % conclusion/summary
 
-To determine if congestive collapse exist in a network. Three candidate metrics were determined:
+Three candidate metrics were determined to measure if congestive collapse exists in a network:
 
 \begin{itemize}
 	\item Ratio of new packets to retransmitted packets in a receiver's queue.
@@ -158,9 +164,7 @@ To determine if congestive collapse exist in a network. Three candidate metrics 
 \end{itemize}
 
 The ratio of new packets and total packets in the receiver's queue will give an idea if more retransmitted packets are being enqueued by the receiver if the ratio decreases over time. However, only using this metric could produce false positives for detecting congestive collapse. For example, during a situation where there is low network traffic and the receiver's queue is close to empty, if one sender happens to retransmit packets that were previously lost, this will decrease the measurement even though congestive collapse did not occur.
-To resolve this issue, queue depth will also be measured to determine if there is a low ratio of new packets and total packets while the receiver's queue depth remains consistently high. In this case, a network with a high queue depth is clogged and if its ratio of packets insist of mostly retransmitted packets, the probability that congestive collapse exist in the network is high.
-
-%Calculating a ratio between the useful throughput and the total throughput of a receiver gives insight to how many duplicate packets have been enqueued in a receiver. However, if this ratio is low due to corrupted packets, that does not indicate congestive collapse. In this case queue depth is measured and if it is largely being filled with duplicate packets rather than new packets, then we can declare that the network is being flooded with retransmissions. In this case these metrics can identify that congestive collapse exist in the network.
+To resolve this issue, queue depth will also be measured to determine if there is a low ratio of new packets and total packets while the receiver's queue depth remains consistently high. In this case, a network with a high queue depth is clogged and if its ratio of packets insist of mostly retransmitted packets, the probability that congestive collapse exists in the network is high.
 
 An example of the problem is simulated and gathered data is shown below. In this SST simulation, a sender component is sending packets at three times the rate that a receiver component can process them at. The receiver's queue fills quickly (Figure \ref{fig-queue}) and the receiver is unable to send acknowledgments under the sender's timeout time. Retransmissions are sent which cause more packets to fill the queue and the ratio of new packets to total packets in the queue exponentially decays to zero; see Figure \ref{fig-packets}.
 
@@ -187,8 +191,10 @@ As the queue grows, starting at around 15 seconds, the ratio of new and retransm
 	\label{fig-ratio}
 \end{figure}
 
+These metrics are updated during simulation runtime so they can be used for detection while the simulation is running.
+
 \section{Future Work}
-Currently, the user must define some threshold to declare that the simulation has encountered congestive collapse. It might be better if the metric measures the trend of data during simulation. For instance, the ratio of new packets to retransmitted packets in the receiver's queue can be analyzed during runtime, and if the change in data appears to be following an exponential decay fit, then the probability that congestive collapse exist increases. Similarly, if the queue size is increasing over time, then this adds to the probability that congestive collapse exists.
+Currently, the user must define some threshold to declare that the simulation has encountered congestive collapse. It might be better if the metric measures the trend of data during simulation. For instance, the ratio of new packets to retransmitted packets in the receiver's queue can be analyzed during runtime, and, if the change in data appears to be following an exponential decay fit, then the probability that congestive collapse exists increases. Similarly, if the queue size is increasing over time, then this adds to the probability that congestive collapse exists in the network.
 
 \bibliographystyle{plain}
 \bibliography{biblio}
