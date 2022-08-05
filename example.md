@@ -115,13 +115,13 @@ You should see the following output (click to expand):
 
 plot-packets.png
 
-<img src ="https://raw.githubusercontent.com/lpsmodsim/2022HPCSummer-Deadlock/main/deadlock-logger-node/example_plots/plot-idle.png" width="720">
+<img src ="https://raw.githubusercontent.com/lpsmodsim/2022HPCSummer-CongestiveCollapse/main/example_plots/plot_packets.png" width="720">
 
 plot-queue.png
 
-<img src="https://raw.githubusercontent.com/lpsmodsim/2022HPCSummer-Deadlock/main/deadlock-logger-node/example_plots/plot-request.png" width="720"/>
+<img src="https://raw.githubusercontent.com/lpsmodsim/2022HPCSummer-CongestiveCollapse/main/example_plots/plot-queue.png" width="720"/>
 
 plot-throughput.png
 
-<img src="https://raw.githubusercontent.com/lpsmodsim/2022HPCSummer-Deadlock/main/deadlock-logger-node/example_plots/plot-state.png" width="720"/>
+<img src="https://raw.githubusercontent.com/lpsmodsim/2022HPCSummer-CongestiveCollapse/main/example_plots/plot-throughput.png" width="720"/>
 
