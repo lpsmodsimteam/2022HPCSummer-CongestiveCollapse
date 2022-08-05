@@ -111,7 +111,7 @@ Plot the output data using the provided example script
 gnuplot example-plot.gp
 ```
 
-You should see the following output (click to expand):
+You will see the following output in 2022HPCSummer-CongestiveCollapse/ (click to expand):
 
 plot-packets.png
 
@@ -124,4 +124,17 @@ plot-queue.png
 plot-throughput.png
 
 <img src="https://raw.githubusercontent.com/lpsmodsim/2022HPCSummer-CongestiveCollapse/main/example_plots/plot-throughput.png" width="720"/>
+
+# Generate Documentation
+
+```
+sudo apt install doxygen
+cd 2022HPCSummer-CongestiveCollapse
+doxygen doxygen-conf
+```
+
+Doxygen documentation will be generated in 2022HPCSummer-CongestiveCollapse/html 
+
+It can be accessed at 2022HPCSummer-CongestiveCollapse/html/index.html
+
 
