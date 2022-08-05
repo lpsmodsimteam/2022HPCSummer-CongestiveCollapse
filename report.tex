@@ -180,7 +180,7 @@ An example of the problem is simulated and gathered data is shown below. In this
 As the queue grows, starting at around 15 seconds, the ratio of new and retransmitted packets in the queue begins to exponentially decay. In a short span of time, only retransmitted packets are being sent to the receiver since the receiver cannot process the packets in its queue. This will result in useful throughput dropping to zero over time; see Figure \ref{fig-ratio}.
 
 \begin{figure}[H]
-	\includegraphics[scale=0.55]{throughput}
+	\includegraphics[scale=0.55]{throughput-fix}
 	\centering
 	\caption{Ratio of goodput and total throughput over one hundred seconds}
 	\label{fig-ratio}
